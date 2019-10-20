@@ -11,12 +11,15 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+//Route::get('/', function () {
+//    return view('welcome');
+//});
+
 
 //Auth::routes(['register' => false]);
 Auth::routes();
 
-
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('/','TodoController@index')->name('todo.index');
+Route::post('/todo/store', 'TodoController@store')->name('todo.store');
