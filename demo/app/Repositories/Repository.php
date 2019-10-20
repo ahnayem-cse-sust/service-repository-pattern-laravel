@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Container\Container as App;
 
 /**
  * Class Repository
@@ -13,11 +14,14 @@ abstract class Repository
 {
     public $recordPerPage = 20;
 
+    private $app;
     protected $model;
+    protected $newModel;
 
 
-    public function __construct()
+    public function __construct(App $app)
     {
+        $this->app = $app;
         $this->makeModel();
     }
 
@@ -92,6 +96,24 @@ abstract class Repository
     }
 
     /**
+     * Get paginated filtered data.
+     *
+     * @param array $filter
+     *
+     * @return \Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function getFilterWithPaginatedData(array $filter)
+    {
+        $query = $this->getQuery();
+
+        if (!empty($filter)) {
+            $this->filterData($filter, $query);
+        }
+
+        return $query->orderBy('id', 'DESC')->paginate($this->recordPerPage);
+    }
+
+    /**
      * @param       $attribute
      * @param       $value
      * @param array $columns
@@ -114,6 +136,24 @@ abstract class Repository
     public function getQuery()
     {
         return $this->model->newQuery();
+    }
+
+    /**
+     * Set Eloquent Model to instantiate
+     *
+     * @param $eloquentModel
+     *
+     * @return Model
+     * @throws RepositoryException
+     */
+    public function setModel($eloquentModel)
+    {
+        $this->newModel = $this->app->make($eloquentModel);
+
+        if (!$this->newModel instanceof Model)
+            throw new RepositoryException("Class {$this->newModel} must be an instance of Illuminate\\Database\\Eloquent\\Model");
+
+        return $this->model = $this->newModel;
     }
 
 }

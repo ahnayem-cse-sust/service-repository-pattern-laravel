@@ -23,3 +23,4 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/','TodoController@index')->name('todo.index');
 Route::post('/todo/store', 'TodoController@store')->name('todo.store');
+Route::get('/todo/delete','TodoController@delete')->name('todo.delete');
