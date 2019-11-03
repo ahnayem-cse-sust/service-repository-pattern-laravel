@@ -24,7 +24,6 @@
                 <tr>
                     <td>{{$task->task}}</td>
                     <td>
-                        <a class="btn btn-primary" href="">Update</a>
                         <a class="btn btn-danger" href="{{route('todo.delete',['id'=>$task->id])}}">Delete</a>
                     </td>
                 </tr>
